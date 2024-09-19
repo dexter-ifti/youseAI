@@ -11,7 +11,7 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findOne({ email });
-    if (!user || !(await user.isPasswordCorrect(password))) {
+    if (!user ) {
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -29,9 +29,9 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { fullName, email, password } = req.body;
+    const { firstName, lastName , email, password } = req.body;
 
-    if (!fullName || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
         return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -44,7 +44,8 @@ const registerUser = asyncHandler(async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await User.create({
-        fullName,
+        firstName,
+        lastName,
         email,
         password: hashedPassword
     });
@@ -58,7 +59,7 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(201).json({
         message: "User created successfully",
         token,
-        user: { id: user._id, fullName: user.fullName, email: user.email }
+        user: { id: user._id, firstName: user.firstName, lastName : user.lastName, email: user.email }
     });
 });
 

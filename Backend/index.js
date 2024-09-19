@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const app = express();
 
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 5001;
 const URL = process.env.MONGO_URL;
 const DB_NAME = process.env.DB_NAME;
 
