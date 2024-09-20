@@ -48,10 +48,16 @@ userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password); 
 };
 
+userSchema.methods.generateAuthToken = async function () {
+    const user = this;
+    const token = jwt.sign({ id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+    // Add token to user's tokens array
+    user.tokens = user.tokens.concat({ token });
+    await user.save();
+
+    return token;
+};
 const User = mongoose.model('User', userSchema);
 
-module.exports = {
-    User,
-    userSchema
-};
+module.exports = User;
