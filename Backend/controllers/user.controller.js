@@ -15,11 +15,7 @@ const loginUser = asyncHandler(async (req, res) => {
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-        { id: user._id },
-        process.env.JWT_SECRET,
-        { expiresIn: '1d' }
-    );
+    const token = await user.generateAuthToken();
 
     res.json({
         message: "Login successful",
@@ -62,6 +58,17 @@ const registerUser = asyncHandler(async (req, res) => {
         user: { id: user._id, firstName: user.firstName, lastName : user.lastName, email: user.email }
     });
 });
+
+userSchema.methods.generateAuthToken = async function () {
+    const user = this;
+    const token = jwt.sign({ id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Add token to user's tokens array
+    user.tokens = user.tokens.concat({ token });
+    await user.save();
+
+    return token;
+};
 
 const getUser = asyncHandler(async (req, res) => {
     const id = req.user.id
