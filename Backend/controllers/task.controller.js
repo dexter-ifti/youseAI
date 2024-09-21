@@ -1,4 +1,5 @@
 const Task = require('../models/task.model');
+const User = require('../models/user.model');
 const asyncHandler = require('../utils/asyncHandler');
 
 // Create a new task
@@ -17,6 +18,10 @@ const createTask = asyncHandler(async (req, res) => {
         dueDate,
         user: req.user.id 
     });
+
+    const user = await Userser.findById(req.user._id);
+    user.tasks.push(task._id);
+    await user.save();
 
     res.status(201).json(task);
 });
