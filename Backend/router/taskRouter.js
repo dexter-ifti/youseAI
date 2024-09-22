@@ -1,3 +1,4 @@
+// task Router 
 const router = require('express').Router();
 const {
     createTask,
@@ -9,8 +10,10 @@ const {
 } = require('../controllers/task.controller');
 const { authMiddleware } = require('../middleware/authMiddleware');
 
+// tasks/
 router.post('/', authMiddleware, createTask);
 router.get('/', authMiddleware, getAllTasks);
+// tasks/filter
 router.get('/filter', authMiddleware, getAllTasksWithFilterAndSorting);
 router.get('/:id', authMiddleware, getById);
 router.patch('/:id', authMiddleware, updateById);
